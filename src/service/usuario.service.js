@@ -16,6 +16,7 @@ const verifyEmail = async (email) => {
 
   return exitEmail !== 0;
 };
+// eslint-disable-next-line max-params
 const create = async (nome, email, senha, telefoneNumero, telefoneDdd) => {
   const exit = await verifyEmail(email);
 

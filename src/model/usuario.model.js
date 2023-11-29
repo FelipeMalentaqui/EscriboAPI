@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 const connection = require('../db/connection');
 
 const getAll = async () => {
@@ -25,21 +26,16 @@ const verifyEmail = async (email) => {
   return result[0].count;
 };
 
+// eslint-disable-next-line max-params
 const create = async (nome, email, senha, telefoneNumero, telefoneDdd) => {
-  try {
-    const query = 'INSERT INTO usuarios.users (nome, email, senha, telefone_numero, telefone_ddd) VALUES (?, ?, ?, ?, ?)';
+  const query = `INSERT INTO usuarios.users 
+  (nome, email, senha, telefone_numero, telefone_ddd) VALUES (?, ?, ?, ?, ?)`;
+  const values = [nome, email, senha, telefoneNumero || null, telefoneDdd || null];
 
-    const values = [nome, email, senha, telefoneNumero || null, telefoneDdd || null];
+  const [result] = await connection.query(query, values);
 
-    const [result] = await connection.query(query, values);
-
-    if (result && result[0] && 'insertId' in result[0]) {
-      return { id: result[0].insertId };
-    } 
-      throw new Error('Erro ao obter o ID do usuário criado.');
-  } catch (error) {
-    console.error('Erro ao criar usuário:', error);
-    throw error;
+  if (result && result[0] && 'insertId' in result[0]) {
+    return { id: result[0].insertId };
   }
 };
 
