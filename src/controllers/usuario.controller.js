@@ -18,18 +18,22 @@ const findById = async (req, res) => {
 };
 
 const create = async (req, res) => {
-     const user = { ...req.body };
+  const { nome, email, senha } = req.body;
 
-     const newUser = await usuarioService.create(user);
+  const newUser = await usuarioService.create(nome, email, senha);
 
-     return res.status(201).json(newUser);
+  if (newUser.error) {
+    return res.status(400).json({ message: newUser.error });
+  }
+
+  return res.status(201).json(newUser);
 };
 
 const update = async (req, res) => {
   const { id } = req.params;
   const { nome, email, senha } = req.body;
 
-  const updateUser = await usuarioService.update(id, nome, email, senha);
+  const updateUser = await usuarioService.update(nome, email, senha, id);
 
   return res.status(200).json(updateUser);
 };

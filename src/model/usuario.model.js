@@ -1,42 +1,56 @@
-const usuarioJson = require('../../usuarios');
+const connection = require('../db/connection');
 
 const getAll = async () => {
-  console.log('model');
-  const usuarios = await usuarioJson;
+  const [usuarios] = await connection.execute(
+    'SELECT * FROM usuarios.users',
+  );
   return usuarios;
 };
 
-const findById = async () => {
-  const usuario = await usuarioJson;
-  console.log('findByid');
+const findById = async (id) => {
+  const [[usuario]] = await connection.execute(
+    'SELECT * FROM usuarios.users WHERE id = ?',
+    [id],
+  );
 
   return usuario;
 };
 
-const create = async (user) => {
-  const usuario = await usuarioJson;
-
-  usuario.push(user);
+const verifyEmail = async (email) => {
+  const [usuario] = await connection.execute(
+    'SELECT * FROM usuarios.users WHERE email = ?',
+    [email],
+  );
 
   return usuario;
 };
 
-const update = async (id) => {
-  const usuario = await usuarioJson;
+const create = async (nome, email, senha) => {
+  // const { numero, ddd } = telefone;
+  const [{ insertId }] = await connection.execute(
+    'INSERT INTO usuarios.users (nome, email, senha) VALUES(?,?,?)',
+    [nome, email, senha],
+  );
 
-  const updateUser = usuario.find((user) => user.id === Number(id));
-  console.log(updateUser, 'MODEL USER');
-  return updateUser;
+  return { Id: insertId };
+};
+
+const update = async (nome, email, senha, id) => {
+  const [{ affectedRows }] = await connection.execute(
+    'UPDATE usuarios.users SET nome = ?, email = ?, senha = ? WHERE id = ?',
+    [nome, email, senha, id],
+  );
+  return affectedRows;
 };
 
 const userDelete = async (id) => {
-  const usuario = await usuarioJson;
+  console.log('ID VINDO DA SERVICE: ', id);
+  const [{ affectedRows }] = await connection.execute(
+    'DELETE FROM usuarios.users WHERE id = ?',
+    [id],
+  );
 
-  const arrayPosition = usuario.findIndex((user) => user.id === Number(id));
-
-  usuario.splice(arrayPosition, 1);
-
-  return id;
+  return affectedRows;
 };
 
 module.exports = {
@@ -45,4 +59,5 @@ module.exports = {
   create,
   update,
   userDelete,
+  verifyEmail,
 };

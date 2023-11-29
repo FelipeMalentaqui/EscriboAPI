@@ -6,29 +6,30 @@ const getAll = async () => {
 };
 
 const findById = async (id) => {
-  const userId = await usuarioModel.findById();
-  // console.log(userId);
+  const userId = await usuarioModel.findById(id);
 
-  const oneUser = await userId.find((user) => user.id === Number(id));
-
-  // console.log(oneUser);
-
-  return oneUser;
+  return userId;
 };
 
-const create = async (user) => {
-  const newUser = await usuarioModel.create(user);
+const verifyEmail = async (email) => {
+  const exitEmail = await usuarioModel.verifyEmail(email);
+
+  return exitEmail.length !== 0;
+};
+const create = async (nome, email, senha) => {
+  const exit = await verifyEmail(email);
+
+  if (exit) {
+    return { error: 'E-mail já existente!' };
+  }
+  const newUser = await usuarioModel.create(nome, email, senha);
 
   return newUser;
 };
 
-const update = async (id, nome, email, senha) => {
-  const userId = await usuarioModel.update(id);
+const update = async (nome, email, senha, id) => {
+  const userId = await usuarioModel.update(nome, email, senha, id);
   
-  userId.nome = nome;
-  userId.email = email;
-  userId.senha = senha;
-  console.log(userId, 'USERID');
   return userId;
 };
 
@@ -44,4 +45,5 @@ module.exports = {
   create,
   update,
   userDelete,
+  verifyEmail,
 };
