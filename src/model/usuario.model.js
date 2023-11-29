@@ -17,12 +17,12 @@ const findById = async (id) => {
 };
 
 const verifyEmail = async (email) => {
-  const [usuario] = await connection.execute(
-    'SELECT * FROM usuarios.users WHERE email = ?',
+  const [result] = await connection.execute(
+    'SELECT COUNT(*) as count FROM usuarios.users WHERE email = ?',
     [email],
   );
-
-  return usuario;
+  console.log('resultado do EMAIL: ', result);
+  return result[0].count;
 };
 
 const create = async (nome, email, senha) => {

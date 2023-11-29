@@ -14,7 +14,7 @@ const findById = async (id) => {
 const verifyEmail = async (email) => {
   const exitEmail = await usuarioModel.verifyEmail(email);
 
-  return exitEmail.length !== 0;
+  return exitEmail !== 0;
 };
 const create = async (nome, email, senha) => {
   const exit = await verifyEmail(email);
