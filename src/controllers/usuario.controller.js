@@ -18,9 +18,9 @@ const findById = async (req, res) => {
 };
 
 const create = async (req, res) => {
-  const { nome, email, senha } = req.body;
+  const { nome, email, senha, telefoneNumero, telefoneDdd } = req.body;
 
-  const newUser = await usuarioService.create(nome, email, senha);
+  const newUser = await usuarioService.create(nome, email, senha, telefoneNumero, telefoneDdd);
 
   if (newUser.error) {
     return res.status(400).json({ message: newUser.error });

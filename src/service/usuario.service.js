@@ -16,13 +16,13 @@ const verifyEmail = async (email) => {
 
   return exitEmail !== 0;
 };
-const create = async (nome, email, senha) => {
+const create = async (nome, email, senha, telefoneNumero, telefoneDdd) => {
   const exit = await verifyEmail(email);
 
   if (exit) {
     return { error: 'E-mail já existente!' };
   }
-  const newUser = await usuarioModel.create(nome, email, senha);
+  const newUser = await usuarioModel.create(nome, email, senha, telefoneNumero, telefoneDdd);
 
   return newUser;
 };

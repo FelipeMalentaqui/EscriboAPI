@@ -21,18 +21,26 @@ const verifyEmail = async (email) => {
     'SELECT COUNT(*) as count FROM usuarios.users WHERE email = ?',
     [email],
   );
-  console.log('resultado do EMAIL: ', result);
+  // console.log('resultado do EMAIL: ', result);
   return result[0].count;
 };
 
-const create = async (nome, email, senha) => {
-  // const { numero, ddd } = telefone;
-  const [{ insertId }] = await connection.execute(
-    'INSERT INTO usuarios.users (nome, email, senha) VALUES(?,?,?)',
-    [nome, email, senha],
-  );
+const create = async (nome, email, senha, telefoneNumero, telefoneDdd) => {
+  try {
+    const query = 'INSERT INTO usuarios.users (nome, email, senha, telefone_numero, telefone_ddd) VALUES (?, ?, ?, ?, ?)';
 
-  return { Id: insertId };
+    const values = [nome, email, senha, telefoneNumero || null, telefoneDdd || null];
+
+    const [result] = await connection.query(query, values);
+
+    if (result && result[0] && 'insertId' in result[0]) {
+      return { id: result[0].insertId };
+    } 
+      throw new Error('Erro ao obter o ID do usuário criado.');
+  } catch (error) {
+    console.error('Erro ao criar usuário:', error);
+    throw error;
+  }
 };
 
 const update = async (nome, email, senha, id) => {
